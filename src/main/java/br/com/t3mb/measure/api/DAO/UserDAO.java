@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -71,6 +72,46 @@ public class UserDAO {
 					+ "where "
 					+ "a.id = ?");
 			ps.setLong(1, id);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			
+			if (rs.next()) {
+				result = new User(
+						rs.getLong("uid"), 
+						rs.getString("uname"), 
+						rs.getString("login"), 
+						rs.getString("password"), 
+						null, 
+						new UserGroup(rs.getLong("gid"), rs.getString("gname")), 
+						new User(rs.getLong("sid"), rs.getString("sname")), 
+						rs.getBoolean("hassuperior"), 
+						rs.getString("status"));
+			}
+			
+			rs.close();
+			ps.close();
+		}
+		catch(SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		return result;
+	}
+
+	public User getUser(String username) {
+		User result  = null;
+		try {
+			connection = ConnectionFactory.getConexao("t3mb_measure");
+			PreparedStatement ps = connection.prepareStatement(""
+					+ "select a.id uid, a.name uname, a.login, a.password, a.hassuperior, a.status, " + 
+					"b.id sid, b.name sname, " + 
+					"c.id gid, c.name gname " + 
+					"from measure_user a " + 
+					"left join measure_user b on a.superior_id = b.id " + 
+					"inner join user_group c on a.usergroup_id = c. id "
+					+ "where "
+					+ "a.login = ?");
+			ps.setString(1, username);
 			
 			ResultSet rs = ps.executeQuery();
 			

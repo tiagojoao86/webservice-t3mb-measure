@@ -1,6 +1,7 @@
 package br.com.t3mb.measure.api.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,10 @@ public class UserService {
 
 	public User getUser(long id) {
 		return userDAO.getUser(id);
+	}
+
+	public User getUser(String username) {
+		return userDAO.getUser(username);
 	}
 
 }

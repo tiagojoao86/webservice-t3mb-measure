@@ -18,7 +18,7 @@ public class T3mbMeasureApiApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner() {
 		return args -> {
-			String senhaEncoded = SenhaUtils.gerarBCrypt("123456");
+			/*String senhaEncoded = SenhaUtils.gerarBCrypt("123456");
 			System.out.println("Senha Encoded: "+senhaEncoded);
 			
 			senhaEncoded = SenhaUtils.gerarBCrypt("123456");
@@ -26,7 +26,7 @@ public class T3mbMeasureApiApplication {
 			
 			System.out.println("Senha Válida: "+ SenhaUtils.senhaValida("123456", senhaEncoded));
 			
-			UserDAO userDAO = new UserDAO();
+			UserDAO userDAO = new UserDAO();*/
 		};
 	}
 
