@@ -18,8 +18,8 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<User> user = Optional.ofNullable(userService.getUser(username));
 		
+		Optional<User> user = Optional.ofNullable(userService.getUserByLogin(username));		
 		if (user.isPresent()) {
 			return JwtUserFactory.create(user.get());
 		}

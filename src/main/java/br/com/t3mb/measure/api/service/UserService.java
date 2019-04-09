@@ -23,8 +23,8 @@ public class UserService {
 		return userDAO.getUser(id);
 	}
 
-	public User getUser(String username) {
-		return userDAO.getUser(username);
+	public User getUserByLogin(String username) {
+		return userDAO.getUserByLogin(username);
 	}
 
 }

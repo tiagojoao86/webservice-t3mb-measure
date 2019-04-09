@@ -6,16 +6,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import br.com.t3mb.measure.api.model.Role;
 import br.com.t3mb.measure.api.model.User;
 import br.com.t3mb.measure.api.model.UserGroup;
 @Component
 public class UserDAO {
 	
 	private Connection connection;
+	
+	@Autowired
+	private RoleDAO roleDAO;
+	
 	
 	public UserDAO() {
 	}
@@ -98,7 +103,7 @@ public class UserDAO {
 		return result;
 	}
 
-	public User getUser(String username) {
+	public User getUserByLogin(String username) {
 		User result  = null;
 		try {
 			connection = ConnectionFactory.getConexao("t3mb_measure");
@@ -115,19 +120,17 @@ public class UserDAO {
 			
 			ResultSet rs = ps.executeQuery();
 			
-			
 			if (rs.next()) {
 				result = new User(
 						rs.getLong("uid"), 
 						rs.getString("uname"), 
 						rs.getString("login"), 
 						rs.getString("password"), 
-						null, 
+						roleDAO.getUserRoles(rs.getLong("uid")),
 						new UserGroup(rs.getLong("gid"), rs.getString("gname")), 
 						new User(rs.getLong("sid"), rs.getString("sname")), 
 						rs.getBoolean("hassuperior"), 
-						rs.getString("status"));
-			}
+						rs.getString("status"));			}
 			
 			rs.close();
 			ps.close();
@@ -135,6 +138,7 @@ public class UserDAO {
 		catch(SQLException sqle) {
 			sqle.printStackTrace();
 		}
+		
 		return result;
 	}
 	

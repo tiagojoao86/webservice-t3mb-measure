@@ -21,8 +21,10 @@ public class JwtUserFactory {
 	 * @return JwtUser
 	 */
 	public static JwtUser create(User user) {
-		return new JwtUser(user.getId(), user.getLogin(), user.getPassword(),
+		JwtUser jwtUser = new JwtUser(user.getId(), user.getLogin(), user.getPassword(),
 				mapToGrantedAuthorities(user.getRoles()));
+		System.out.println(jwtUser.getAuthorities());
+		return jwtUser;
 	}
 
 	/**
@@ -34,7 +36,7 @@ public class JwtUserFactory {
 	private static List<GrantedAuthority> mapToGrantedAuthorities(List<Role> roles) {
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		roles.forEach(role -> {
-			authorities.add(new SimpleGrantedAuthority(role.getName()));
+			authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getName()));
 		});
 		
 		return authorities;
