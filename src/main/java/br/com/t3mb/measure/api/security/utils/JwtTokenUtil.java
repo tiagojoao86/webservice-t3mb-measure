@@ -19,7 +19,7 @@ public class JwtTokenUtil {
 	static final String CLAIM_KEY_ROLE = "role";
 	static final String CLAIM_KEY_CREATED = "created";
 	
-	@Value("${jwt.scret}")
+	@Value("${jwt.secret}")
 	private String secret;
 	
 	@Value("${jwt.expiration}")

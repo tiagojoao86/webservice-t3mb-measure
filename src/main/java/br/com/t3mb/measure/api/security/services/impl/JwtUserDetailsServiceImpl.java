@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import br.com.t3mb.measure.api.model.User;
+import br.com.t3mb.measure.api.security.JwtUserFactory;
 import br.com.t3mb.measure.api.service.UserService;
 
 public class JwtUserDetailsServiceImpl implements UserDetailsService {

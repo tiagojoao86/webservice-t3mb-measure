@@ -27,6 +27,9 @@ public class T3mbMeasureApiApplication {
 			System.out.println("Senha Válida: "+ SenhaUtils.senhaValida("123456", senhaEncoded));
 			
 			UserDAO userDAO = new UserDAO();*/
+			
+			//System.out.println("New Pass: " + SenhaUtils.gerarBCrypt("123456"));
+			
 		};
 	}
 
