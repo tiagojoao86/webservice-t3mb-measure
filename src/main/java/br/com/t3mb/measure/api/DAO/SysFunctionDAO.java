@@ -35,6 +35,7 @@ public class SysFunctionDAO {
 			
 			rs.close();
 			ps.close();
+			connection.close();
 		}
 		catch(SQLException sqle) {
 			sqle.printStackTrace();
@@ -59,6 +60,7 @@ public class SysFunctionDAO {
 			
 			rs.close();
 			ps.close();
+			connection.close();
 		}
 		catch(SQLException sqle) {
 			sqle.printStackTrace();

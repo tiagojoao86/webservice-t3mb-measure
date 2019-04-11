@@ -23,7 +23,6 @@ public class JwtUserFactory {
 	public static JwtUser create(User user) {
 		JwtUser jwtUser = new JwtUser(user.getId(), user.getLogin(), user.getPassword(),
 				mapToGrantedAuthorities(user.getRoles()));
-		System.out.println(jwtUser.getAuthorities());
 		return jwtUser;
 	}
 
