@@ -11,7 +11,7 @@ public class ConnectionFactory {
 		if (base.equals("t3mb_measure")){
 			try {    
                 Class.forName("org.postgresql.Driver");    
-                return DriverManager.getConnection("jdbc:postgresql://192.168.0.130:5432/t3mb-measure","postgres","alomundo");    
+                return DriverManager.getConnection("jdbc:postgresql://localhost:5432/t3mb-measure","postgres","alomundo");    
 	        }    
 	        catch (ClassNotFoundException e) {    
                 throw new SQLException(e.getMessage());    
