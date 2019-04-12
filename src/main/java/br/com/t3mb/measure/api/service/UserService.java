@@ -24,6 +24,10 @@ public class UserService {
 	public List<User> listActiveUsers() {
 		return userDAO.listActiveUsers();
 	}
+	
+	public List<User> listSuperiorsUsers() {
+		return userDAO.listSuperiorsUsers();
+	}
 
 	public User getUser(long id) {
 		return userDAO.getUser(id);

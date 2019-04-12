@@ -45,7 +45,15 @@ public class UserResources {
 	@PreAuthorize("hasAnyRole('Administrador')")
 	public ResponseEntity<Response<List<User>>> listActiveUsers() {
 		Response<List<User>> response = new Response<List<User>>();
-		response.setData(userService.listUsers());
+		response.setData(userService.listActiveUsers());
+		return new ResponseEntity<Response<List<User>>>(response,HttpStatus.OK); 
+	}
+	
+	@GetMapping(value = "/superiors")
+	@PreAuthorize("hasAnyRole('Administrador')")
+	public ResponseEntity<Response<List<User>>> listSuperiorsUsers() {
+		Response<List<User>> response = new Response<List<User>>();
+		response.setData(userService.listSuperiorsUsers());
 		return new ResponseEntity<Response<List<User>>>(response,HttpStatus.OK); 
 	}
 	
