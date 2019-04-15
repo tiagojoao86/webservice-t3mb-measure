@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,7 +72,6 @@ public class UserResources {
 	}
 	
 	@GetMapping(value = "/login/{login}")
-	@PreAuthorize("hasAnyRole('Administrador')")
 	public ResponseEntity<Response<User>> getUser(@PathVariable("login") String login) {
 		Response<User> response = new Response<User>();
 		User user = userService.getUserByLogin(login);
@@ -87,6 +87,7 @@ public class UserResources {
 	@PostMapping
 	public ResponseEntity<Response<User>> createUser(@Valid @RequestBody User user, BindingResult result) {
 		Response<User> response = new Response<User>();
+		response.setData(user);
 		
 		if (result.hasErrors()) {
 			log.error("Erro validando lançamento: {}", result.getAllErrors());
@@ -95,10 +96,32 @@ public class UserResources {
 		}
 		else {
 			log.info("Inserindo Usuário {}.", user.toString());			
-			userService.createUser(user);
-			response.setData(user);
+			userService.createUser(response);
 			return ResponseEntity.ok(response);
 		}
+	}
+	
+	@GetMapping(value = "/nextid")
+	@PreAuthorize("hasAnyRole('Administrador')")
+	public ResponseEntity<Response<Long>> getNextId() {
+		Response<Long> response = new Response<Long>();
+		response.setData(userService.getNextId());
+		return new ResponseEntity<Response<Long>>(response,HttpStatus.OK); 
+	}
+	
+	@PutMapping
+	@PreAuthorize("hasAnyRole('Administrador')")
+	public ResponseEntity<Response<User>> updateUser(@RequestBody User user) {
+		Response<User> response = new Response<User>();
+		response.setData(user);
+		response = userService.updateUser(response);
+		if (response.getErrors().size() == 0) {
+			return ResponseEntity.ok(response);
+		}
+		else {
+			return new ResponseEntity<Response<User>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+		}		
+		
 	}
 
 }

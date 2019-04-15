@@ -18,6 +18,7 @@ import br.com.t3mb.measure.api.model.User;
 import br.com.t3mb.measure.api.model.UserGroup;
 import br.com.t3mb.measure.api.service.RoleService;
 import br.com.t3mb.measure.api.utils.Response;
+import br.com.t3mb.measure.api.utils.SenhaUtils;
 @Component
 public class UserDAO {
 	
@@ -29,6 +30,29 @@ public class UserDAO {
 	
 	
 	public UserDAO() {
+	}
+	
+	public long getNextId() {
+		long id = 0;
+		try {
+			connection = ConnectionFactory.getConexao("t3mb_measure");
+			PreparedStatement ps = connection.prepareStatement("select nextval(?) id");
+			ps.setString(1, "measure_user_seq");
+			
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				id = rs.getLong("id");
+			}
+			rs.close();
+			ps.close();
+			connection.close();
+		}
+		catch (SQLException sqle) {
+			logHandler(sqle, 1, "criar");
+		}
+		
+		return id;
+		
 	}
 
 	public List<User> listUsers() {
@@ -130,14 +154,14 @@ public class UserDAO {
 			while (rs.next()) {
 				result.add(new User(
 						rs.getLong("uid"), 
-						rs.getString("uname"), 
+						rs.getString("uname")/*, 
 						rs.getString("login"), 
 						rs.getString("password"), 
 						roleService.getUserRoles(rs.getLong("uid")),
 						new UserGroup(rs.getLong("gid"), rs.getString("gname")), 
 						new User(rs.getLong("sid"), rs.getString("sname")), 
 						rs.getBoolean("hassuperior"), 
-						rs.getString("status")));
+						rs.getString("status")*/));
 			}
 			
 			rs.close();
@@ -233,8 +257,8 @@ public class UserDAO {
 		return result;
 	}
 
-	public Response<User> createUser(@Valid User user) {
-		Response<User> response = new Response<User>();
+	public Response<User> createUser(Response<User> response) {
+		User user = response.getData();
 		try {
 			connection = ConnectionFactory.getConexao("t3mb_measure");
 			PreparedStatement ps = connection.prepareStatement(""
@@ -243,7 +267,7 @@ public class UserDAO {
 			ps.setLong(1, user.getId());
 			ps.setString(2, user.getName());
 			ps.setString(3, user.getLogin());
-			ps.setString(4, user.getPassword());
+			ps.setString(4, SenhaUtils.gerarBCrypt(user.getPassword()));
 			ps.setLong(5, user.getUserGroup().getId());
 			ps.setLong(6, user.getSuperior().getId());
 			ps.setBoolean(7, user.isHasSuperior());
@@ -259,7 +283,39 @@ public class UserDAO {
 			
 		}
 		catch (SQLException sqle) {
-			logHandler(sqle, 1, "criar");
+			response.addError(logHandler(sqle, 1, "criar"));
+		}
+		return response;
+	}
+	
+	public Response<User> updateUser(Response<User> response) {
+		User user = response.getData();
+		try {
+			connection = ConnectionFactory.getConexao("t3mb_measure");
+			PreparedStatement ps = connection.prepareStatement(""
+					+ "UPDATE measure_user set id = ?, name = ?, login = ?, password = ?, usergroup_id = ?, superior_id = ?, hassuperior = ?, status = ? "
+					+ "where id = ?");
+			ps.setLong(1, user.getId());
+			ps.setString(2, user.getName());
+			ps.setString(3, user.getLogin());
+			ps.setString(4, SenhaUtils.gerarBCrypt(user.getPassword()));
+			ps.setLong(5, user.getUserGroup().getId());
+			ps.setLong(6, user.getSuperior().getId());
+			ps.setBoolean(7, user.isHasSuperior());
+			ps.setString(8, user.getStatus());
+			ps.setLong(9, user.getId());
+			ps.execute();			
+			ps.close();
+			
+			connection.close();
+			
+			roleService.updateUserRoles(user);
+			
+			logHandler(null, 2, "Usuário "+user.toString()+" criado com sucesso");
+			
+		}
+		catch (SQLException sqle) {
+			response.addError(logHandler(sqle, 1, "atualizar"));
 		}
 		return response;
 	}
@@ -279,6 +335,8 @@ public class UserDAO {
 		}		
 		return error;
 	}
+
+	
 	
 	
 

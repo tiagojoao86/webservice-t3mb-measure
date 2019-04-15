@@ -17,6 +17,10 @@ public class UserService {
 	@Autowired
 	UserDAO userDAO;
 	
+	public long getNextId() {
+		return userDAO.getNextId();
+	}
+	
 	public List<User> listUsers() {
 		return userDAO.listUsers();
 	}
@@ -37,8 +41,12 @@ public class UserService {
 		return userDAO.getUserByLogin(username);
 	}
 
-	public Response<User> createUser(@Valid User user) {
-		return userDAO.createUser(user);
+	public Response<User> createUser(Response<User> response) {
+		return userDAO.createUser(response);
+	}
+
+	public Response<User> updateUser(Response<User> response) {
+		return userDAO.updateUser(response);
 	}
 
 }

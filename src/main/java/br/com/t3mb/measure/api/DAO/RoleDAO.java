@@ -89,6 +89,7 @@ public class RoleDAO {
 		
 		user.getRoles().forEach(role -> {
 			try { 
+				connection = ConnectionFactory.getConexao("t3mb_measure");	
 				PreparedStatement psRoles = connection.prepareStatement(""
 						+ "INSERT INTO user_roles (id_user, id_role) "
 						+ "VALUES (? ,?)");
